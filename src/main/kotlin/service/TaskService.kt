@@ -15,8 +15,7 @@ class TaskService (
            println("title cannot be blank")
            return null
        }
-       val today = LocalDate.now()
-       if (dueDate.isBefore(today)) {
+       if (dueDate.isBefore()) {
            println("due date cannot be before the current date")
            return null
        }
@@ -52,7 +51,34 @@ class TaskService (
         return task
     }
 
+    fun updateTask(id: Int, newTitle: String, newDueDate: String): Boolean {
+        val currentTask = taskRepository.getTaskById(id)
+        if (currentTask == null) {
+            println("Error: Task ID $id not found. Cannot update.")
+            return false
+        }
+        val finalTitle = newTitle.ifBlank {
+            currentTask.title
+        }
+        val finalDueDate = newDueDate.ifBlank {
+            currentTask.dueDate
+        }
+        if (finalDueDate.isBefore()) {
+            println("Title cannot be before the current date")
+            return false
+        }
+        val status = currentTask.status
+        if (currentTask.status == TaskStatus.DONE) {
+            println("The Task cannot update.It's already done.")
+            return false
+        }
 
+        val updatedTask = taskRepository.updateTask(id, finalTitle, status,finalDueDate)
+        println("Updated task successfully")
+        return updatedTask
+
+
+    }
 
     fun markInProgress(id: Int, status: TaskStatus = TaskStatus.IN_PROGRESS): Boolean {
         val task = taskRepository.getTaskById(id)
@@ -69,7 +95,9 @@ class TaskService (
             println("Warning: Cannot change status. Task ID $id is already completed (DONE).")
             return false
         }
-        val updatedStatus = taskRepository.updateStatusTask(id,status)
+        val title = task.title
+        val dueDate = task.dueDate
+        val updatedStatus = taskRepository.updateTask(id,title,status,dueDate)
         println("Mark in_progress task status Successfully")
         return updatedStatus
     }
@@ -88,7 +116,9 @@ class TaskService (
             println("Processing: Cannot changing task status from TODO to DONE...")
             return false
         }
-        val updatedStatus = taskRepository.updateStatusTask(id,status)
+        val title = task.title
+        val dueDate = task.dueDate
+        val updatedStatus = taskRepository.updateTask(id,title,status,dueDate)
         println("Mark done task status Successfully")
         return updatedStatus
     }

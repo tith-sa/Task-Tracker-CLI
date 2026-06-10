@@ -97,15 +97,18 @@ class TaskRepository {
         }
     }
 
-    fun updateStatusTask(id: Int, newStatus: TaskStatus): Boolean {
+    fun updateTask(id: Int, newTitle: String,newStatus: TaskStatus,newDueDate: String): Boolean {
         val sql = """
-            UPDATE tasks SET status = ? WHERE id = ?
+            UPDATE tasks SET title = ?, status = ?, dueDate = ? WHERE id = ?
         """.trimIndent()
 
         DatabaseConfig.getConnection().use { connection ->
             connection.prepareStatement(sql).use { statement ->
-                statement.setString(1, newStatus.name)
-                statement.setInt(2, id)
+
+                statement.setString(1, newTitle)
+                statement.setString(2, newStatus.name)
+                statement.setString(3, newDueDate)
+                statement.setInt(4, id)
 
                 val rowsUpdated = statement.executeUpdate()
                 return rowsUpdated > 0

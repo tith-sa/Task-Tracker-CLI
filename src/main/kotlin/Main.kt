@@ -24,6 +24,7 @@ fun main() {
         println("5: Mark In_Progress Task")
         println("6: Mark Done Task")
         println("7: Delete Task")
+        println("8: update Task")
         val choice = reader.nextLine()
 
         when (choice) {
@@ -82,6 +83,19 @@ fun main() {
                 print("Input ID : ")
                 val id = reader.nextLine().trim().toInt()
                 taskService.deleteTask(id)
+            }
+            "8" -> {
+                println("update Task")
+                print("Input ID : ")
+                val id = reader.nextLine().trim().toInt()
+
+                print("Input Title : ")
+                val title = reader.nextLine().trim()
+
+                print("Input Due Date (YYYY-MM-DD) : ")
+                val dueDate = reader.nextLine().trim()
+
+                taskService.updateTask(id,title,dueDate)
             }
             else -> {
                 break
