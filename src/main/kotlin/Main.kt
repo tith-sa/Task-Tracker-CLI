@@ -1,10 +1,9 @@
 package org.example
 
 import org.example.migration.CreateTaskTable
+import org.example.model.TaskStatus
 import org.example.repository.TaskRepository
 import org.example.service.TaskService
-import java.time.LocalDate
-import java.time.format.DateTimeParseException
 import java.util.Scanner
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
@@ -19,6 +18,12 @@ fun main() {
     while (true) {
         println(" ====== Menu ====== ")
         println("1: Add Task")
+        println("2: Get All Task")
+        println("3: Get Task by Status")
+        println("4: Get Task By Id")
+        println("5: Mark In_Progress Task")
+        println("6: Mark Done Task")
+        println("7: Delete Task")
         val choice = reader.nextLine()
 
         when (choice) {
@@ -30,16 +35,57 @@ fun main() {
                 print("Input dueDate (YYYY-MM-DD) : ")
                 val dueDateInput = reader.nextLine()
 
-                try {
-                    val dueDate: LocalDate = LocalDate.parse(dueDateInput)
-                    taskService.createTask(titleInput, dueDate)
-                } catch (e: DateTimeParseException) {
-                    println("due date is invalid format!")
+                taskService.createTask(titleInput,dueDateInput)
+            }
+            "2" -> {
+                println("List All Task")
+                taskService.getAllTasks()
+
+            }
+            "3" ->{
+                println("Get Todo Task")
+                val statuses = TaskStatus.entries
+                statuses.forEachIndexed { index, status ->
+                    println("${index + 1}. ${status.name}")
                 }
+                print("Enter option number : ")
+                val option = reader.nextLine().trim().toIntOrNull()
+
+                if (option != null && option in 1..statuses.size) {
+                    val selectedStatus = statuses[option - 1]
+
+                  taskService.getListTasks(selectedStatus)
+                } else {
+                    println("Error: Wrong option number!")
+                }
+            }
+            "4" -> {
+                println("Get Task By Id")
+                print("Input Id : ")
+                val id = reader.nextLine().trim().toInt()
+                taskService.getTaskById(id)
+            }
+            "5" ->{
+                println("Mark In_progress Task")
+                print("Input ID : ")
+                val inputId = reader.nextLine().trim().toInt()
+                taskService.markInProgress(inputId)
+            }
+            "6" -> {
+                println("Mark Done Task")
+                print("Input ID : ")
+                val inputId = reader.nextLine().trim().toInt()
+                taskService.markDone(inputId)
+            }
+            "7" -> {
+                println("Delete Task")
+                print("Input ID : ")
+                val id = reader.nextLine().trim().toInt()
+                taskService.deleteTask(id)
+            }
+            else -> {
+                break
             }
         }
     }
-
-
-
 }

@@ -11,7 +11,7 @@ object CreateTaskTable {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             title VARCHAR (255) NOT NULL,
             status VARCHAR(50) NOT NULL,
-            dueDate DATE NOT NULL
+            dueDate VARCHAR(50) NOT NULL
             )
         """.trimIndent()
 
